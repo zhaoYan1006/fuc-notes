@@ -1,0 +1,71 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	
+	
+	<!-- 父项目 -->
+	<parent>
+		<groupId>fuc</groupId>
+		<artifactId>fuc-parent</artifactId>
+		<version>1.0</version>
+	</parent>
+
+
+	<!-- 坐标 -->
+	<artifactId>fuc-notes</artifactId>
+	<packaging>war</packaging>
+	
+	
+	<!-- 属性 -->
+	<properties>
+		<maven.install.skip>true</maven.install.skip>
+		<maven.deploy.skip>true</maven.deploy.skip>
+	</properties>
+	
+	
+	<!-- 依赖 -->
+	<dependencies>
+		<!-- fuc -->
+		<dependency>
+			<groupId>fuc</groupId>
+			<artifactId>fuc-common</artifactId>
+			<version>1.0</version>
+		</dependency>
+		
+		<!-- Spring -->
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-webmvc</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-jdbc</artifactId>
+		</dependency>
+		
+		<!-- mybatis -->
+		<dependency>
+			<groupId>org.mybatis</groupId>
+			<artifactId>mybatis</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.mybatis</groupId>
+			<artifactId>mybatis-spring</artifactId>
+		</dependency>
+		<!-- db.驱动.mysql -->
+		<dependency>
+			<groupId>mysql</groupId>
+			<artifactId>mysql-connector-java</artifactId>
+		</dependency>
+		<!-- db.连接池.HikariCP -->
+		<dependency>
+			<groupId>com.zaxxer</groupId>
+			<artifactId>HikariCP</artifactId>
+		</dependency>
+	</dependencies>
+	
+	
+	<!-- 构建 -->
+	<build>
+		<finalName>fuc-notes</finalName>
+	</build>
+</project>
