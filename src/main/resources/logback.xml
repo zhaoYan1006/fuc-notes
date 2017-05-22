@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/2002/xmlspec/dtd/2.10/xmlspec.dtd">
+<configuration>
+	<!-- 输出目的地：控制台 -->
+	<appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+		<encoder>
+			<pattern>%d{HH:mm:ss.SSS} %-5level %logger{36} %X{method} %X{traceId} - %msg%n</pattern>
+		</encoder>
+	</appender>
+	
+	<!-- logstash格式日志 -->
+	<appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<encoder class="net.logstash.logback.encoder.LogstashEncoder">
+			<customFields>{"type":"${r"${system.name}"}","env":"${r"${env}"}"}</customFields>
+		</encoder>
+		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+			<fileNamePattern>/var/log/${r"${system.name}"}/%d.%i.log</fileNamePattern>
+			<MaxHistory>30</MaxHistory>
+			<TimeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+				<MaxFileSize>10MB</MaxFileSize>
+			</TimeBasedFileNamingAndTriggeringPolicy>
+		</rollingPolicy>
+	</appender>
+	
+	<logger name="fuc" level="${r"${log.level.bussiness}"}" additivity="false">
+		${r"${log.appender-ref}"}
+	</logger>
+	<logger name="fuc.generator.dao" level="${r"${log.level.sql}"}" additivity="false">
+		${r"${log.appender-ref}"}
+	</logger>
+	<logger name="fuc.common" level="${r"${log.level.bussiness}"}" additivity="false">
+		${r"${log.appender-ref}"}
+	</logger>
+	<root level="${r"${log.level.default}"}" additivity="false">
+		${r"${log.appender-ref}"}
+	</root>
+</configuration>

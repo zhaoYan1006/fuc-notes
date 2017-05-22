@@ -1,0 +1,263 @@
+<#macro mapperEl value prefix="">${r"#{"}${prefix}${value}}</#macro>
+<#macro enumMapperEl value>${r"#{"}${value}.code}</#macro>
+<#macro targetMapperEl value>${r"#{target."}${value}}</#macro>
+<#assign className = table.className>
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<!--
+    ${table.remarks} 数据库表操作mybatis映射sql配置文件
+    created by generator on ${now?string('yyyy-MM-dd HH:mm:ss')}
+-->
+<mapper namespace="${base_package}.dao.base.Base${table.className}Dao">
+	
+	<!-- ************************** insert ***************************** -->
+	
+	<!-- 插入一条记录 -->
+	<insert id="insert" useGeneratedKeys="true" keyProperty="entity.${table.pkColumns[0]}">
+		<include refid="insertIntoSql"/>
+		<include refid="insertValueSql"/>
+	</insert>
+	
+	<!-- 插入多条记录 -->
+	<insert id="insertAll">
+		<include refid="insertIntoSql"/>
+		<foreach collection="list" item="entity" separator="," >
+			<include refid="insertValueSql"/>
+		</foreach>
+	</insert>
+	
+	
+	<!-- ************************** delete ***************************** -->
+	
+	<!-- 删除（根据主键） -->
+	<delete id="deleteByPk">
+		delete from 
+			<include refid="tableNameSql"/>
+		<include refid="whereSql_pk"/>
+	</delete>
+	
+	<!-- 删除（根据组合等值条件） -->
+	<delete id="deleteByExample">
+		delete from 
+			<include refid="tableNameSql"/>
+		<include refid="whereSql_example"/>
+	</delete>
+	
+	<!-- 删除（根据单个等值条件） -->
+	<delete id="deleteByField" statementType="STATEMENT">
+		delete from 
+			<include refid="tableNameSql"/>
+		<include refid="whereSql_field"/>
+	</delete>
+	
+	
+	
+	<!-- ************************** update ***************************** -->
+	
+	<!-- 修改（所有字段） -->
+	<update id="update">
+		<include refid="updateSetSql_all"/>
+		<include refid="whereSql_pk"/>
+	</update>
+	
+	<!-- 修改（部分字段） -->
+	<update id="updateByExample">
+		<include refid="updateSetSql_example"/>
+		<include refid="whereSql_pk"/>
+	</update>
+	
+	<!-- 修改（单个字段） -->
+	<update id="updateByField">
+		<include refid="updateSetSql_field"/>
+		<include refid="whereSql_pk"/>
+	</update>
+	
+	
+	
+	<!-- ************************** select one ***************************** -->
+	
+	<!-- 单条查询（根据主键） -->
+	<select id="selectByPk" resultType="${className}">
+		<include refid="selectFromSql"/>
+		<include refid="whereSql_pk"/>
+    </select>
+	
+	<!-- 单条查询（根据组合等值条件查询第一条记录） -->
+	<select id="selectFirstByExample" resultType="${className}">
+		<include refid="selectFromSql"/>
+		<include refid="whereSql_example"/>
+		limit 
+			0,1
+	</select>
+	
+	<!-- 单条查询（根据单个等值条件查询第一条记录） -->
+	<select id="selectFirstByField" resultType="${className}">
+		<include refid="selectFromSql"/>
+		<include refid="whereSql_field"/>
+		limit 
+			0,1
+	</select>
+	
+	
+	
+	<!-- ************************** select many ***************************** -->
+	
+	<!-- 分页查询（无条件） -->
+	<select id="select" resultType="${className}">
+		<include refid="selectFromSql"/>
+		<include refid="limitSql"/>
+	</select>
+	
+	<!-- 分页查询（根据组合等值条件） -->
+	<select id="selectByExample" resultType="${className}">
+		<include refid="selectFromSql"/>
+		<include refid="whereSql_example"/>
+		<include refid="limitSql"/>
+	</select>
+	
+	<!-- 分页查询（根据单个等值条件） -->
+	<select id="selectByField" resultType="${className}">
+		<include refid="selectFromSql"/>
+		<include refid="whereSql_field"/>
+		<include refid="limitSql"/>
+	</select>
+	
+	
+	
+	<!-- ************************** select count ***************************** -->
+	
+	<!-- 统计记录数（无条件） -->
+	<select id="count" resultType="Integer">
+		<include refid="selectCountFromSql"/>
+	</select>
+	
+	<!-- 统计记录数（根据组合等值条件）. -->
+	<select id="countByExample" resultType="Integer">
+		<include refid="selectCountFromSql"/>
+		<include refid="whereSql_example"/>
+	</select>
+	
+	<!-- 统计记录数（根据单个等值条件）. -->
+	<select id="countByField" resultType="Integer">
+		<include refid="selectCountFromSql"/>
+		<include refid="whereSql_field"/>
+	</select>
+	
+	
+	
+	<!-- **************************** sql片段 **************************** -->
+	
+	<!-- 表名配置 -->
+	<sql id="tableNameSql">
+		`${table.sqlName}`
+	</sql>
+	
+	<!-- insert into -->
+	<sql id="insertIntoSql">
+		insert into 
+			<include refid="tableNameSql"/>
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+		<#list table.columns as column>
+		<#if !column.pk>
+			`${column.sqlName}`,
+		</#if>
+		</#list>
+		</trim>
+		values
+	</sql>
+	
+	<!-- values -->
+	<sql id="insertValueSql">
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+		<#list table.columns as column>
+		<#if !column.pk>
+			<@mapperEl column.javaName "entity."/>,
+		</#if>
+		</#list>
+		</trim>
+	</sql>
+	
+	<!-- update set -->
+	<sql id="updateSetSql_all">
+		update 
+			<include refid="tableNameSql"/>
+		<set>
+		<#list table.columns as column>
+		<#if !column.pk>
+			`${column.sqlName}` = <@mapperEl column.javaName/>, 
+		</#if>
+		</#list>
+		</set>
+	</sql>
+	
+	<!-- update set -->
+	<sql id="updateSetSql_example">
+		update 
+			<include refid="tableNameSql"/>
+		<set>
+			<#list table.columns as column>
+			<#if !column.pk>
+			<if test="${column.javaName} != null">`${column.sqlName}` = <@mapperEl column.javaName/>, </if>
+			</#if>
+			</#list>
+		</set>
+	</sql>
+	
+	<!-- update set -->
+	<sql id="updateSetSql_field">
+		update 
+			<include refid="tableNameSql"/>
+		<set>
+			`${r"${fieldName}"}` = '${r"${value}"}'
+		</set>
+	</sql>
+	
+	<!-- select from -->
+	<sql id="selectFromSql">
+		select
+			*
+		from 
+			<include refid="tableNameSql"/>
+	</sql>
+	
+	<!-- select from -->
+	<sql id="selectCountFromSql">
+		select
+			count(*)
+		from 
+			<include refid="tableNameSql"/>
+	</sql>
+
+	<!-- where -->
+	<sql id="whereSql_pk">
+		where 
+			`${table.pkColumns[0]}` = <@mapperEl table.pkColumns[0].javaName/>
+	</sql>
+	
+	<!-- where -->
+	<sql id="whereSql_example">
+		<where>
+			<#list table.columns as column>
+			<#if !column.pk>
+			<if test="example.${column.javaName} != null">and `${column.sqlName}` = <@mapperEl column.javaName "example."/></if>
+			</#if>
+			</#list>
+		</where>
+	</sql>
+	
+	<!-- where -->
+	<sql id="whereSql_field">
+		where
+			`${r"${fieldName}"}` = '${r"${value}"}'
+	</sql>
+	
+	<!-- limit -->
+	<sql id="limitSql">
+		<if test="length != null">
+			limit 
+				${r"#{start}"}, ${r"#{length}"}
+		</if>
+	</sql>
+	
+</mapper>

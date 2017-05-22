@@ -1,0 +1,45 @@
+<#macro mapperEl value prefix="">${r"#{"}${prefix}${value}}</#macro>
+<#macro enumMapperEl value>${r"#{"}${value}.code}</#macro>
+<#macro targetMapperEl value>${r"#{target."}${value}}</#macro>
+<#assign className = table.className>
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<!--
+    ${table.remarks} 数据库表操作mybatis映射sql配置文件
+    created by generator on ${now?string('yyyy-MM-dd HH:mm:ss')}
+-->
+<mapper namespace="${base_package}.dao.${table.className}Dao">
+	
+	<!-- **************************** sql片段 **************************** -->
+	
+	<!-- 表名配置 -->
+	<sql id="tableNameSql">
+		`${table.sqlName}`
+	</sql>
+	
+	<!-- select from -->
+	<sql id="selectFromSql">
+		select
+			*
+		from 
+			<include refid="tableNameSql"/>
+	</sql>
+	
+	<!-- select from -->
+	<sql id="selectCountFromSql">
+		select
+			count(*)
+		from 
+			<include refid="tableNameSql"/>
+	</sql>
+
+	<!-- limit -->
+	<sql id="limitSql">
+		<if test="length != null">
+			limit 
+				${r"#{start}"}, ${r"#{length}"}
+		</if>
+	</sql>
+	
+</mapper>

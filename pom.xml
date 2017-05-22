@@ -104,6 +104,16 @@
 	
 	<!-- 构建 -->
 	<build>
+		<!-- 打包名 -->
 		<finalName>fuc-notes</finalName>
+		
+		<!-- 插件 -->
+		<plugins>
+			<!-- 外部properties文件替换插件 -->
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>properties-maven-plugin</artifactId>
+			</plugin>
+		</plugins>
 	</build>
 </project>
